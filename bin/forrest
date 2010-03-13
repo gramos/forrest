@@ -1,16 +1,12 @@
 #!/usr/bin/env ruby
 
 require 'ftools'
-ENV["RAILS_ENV"] = "test"
-# require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
-
 require 'rubygems'
 require 'active_support/core_ext/string/inflections'
 require 'active_support/core_ext/string'
 require 'test/unit/ui/console/testrunner'
 require File.join(File.dirname(__FILE__), '../lib/object')
 require File.join(File.dirname(__FILE__), '../lib/forrest/unix_console_styler')
-
 
 module Stories
 
@@ -41,7 +37,7 @@ module Stories
     end
 
     def print_story
-      puts "- #{@story.name} \n\n"
+      puts "- #{colorize(@story.name, :bold)} \n\n"
 
       @story.scenarios.each do |scenario|
         puts "    #{scenario.name}"
