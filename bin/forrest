@@ -52,11 +52,10 @@ module Stories
       puts
       print_story
       super
-      stories_count   = Stories.all.values.size
-      scenarios_count = Stories.all.values.inject(0) {|total,s|
-                            total + s.scenarios.size }
+      stories_count   = 1
+      scenarios_count = @story.scenarios.size
 
-      puts colorize("#{stories_count} stories, ", :bold) +
+      puts colorize("#{stories_count} story, ", :bold) +
            colorize(" #{scenarios_count} scenarios", :bold)
 
     end
@@ -121,10 +120,10 @@ if File.file? ARGV[0]
   show
 else
   if ARGV[0].include? "#"
-    puts "Runing scenario..."
+    puts "==> Runing scenario...\n\n"
     run_scenario
   else
-    puts "Runing story..."
+    puts "==> Runing story...\n\n"
     run_story
   end
 end
