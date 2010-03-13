@@ -73,7 +73,7 @@ def print_test_cases(test_cases)
     tests = tc.suite.tests
     puts "\n+ #{colorize(tc, :bold)}"
     tests.each{|t|
-      puts "|__ #{tc}##{t.method_name}"
+      puts "|__ #{colorize(tc, :cyan)}##{colorize(t.method_name, :yellow)}"
     }
   }
 end
@@ -125,8 +125,10 @@ if File.file? ARGV[0]
   show
 else
   if ARGV[0].include? "#"
+    puts "Runing scenario..."
     run_scenario
   else
+    puts "Runing story..."
     run_story
   end
 end
