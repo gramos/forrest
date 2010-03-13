@@ -1,12 +1,32 @@
 #!/usr/bin/env ruby
 
-require 'optparse'
 require 'ftools'
 ENV["RAILS_ENV"] = "test"
-require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
+# require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
+
+require 'rubygems'
+require 'active_support/core_ext/string/inflections'
 
 require 'test/unit/ui/console/testrunner'
-require 'unix_console_styler'
+require File.join(File.dirname(__FILE__), '../lib/forrest/unix_console_styler')
+
+class Object
+  def self.subclasses(direct = false)
+    classes = []
+    if direct
+      ObjectSpace.each_object(Class) do |c|
+        next unless c.superclass == self
+        classes << c
+      end
+    else
+      ObjectSpace.each_object(Class) do |c|
+        next unless c.ancestors.include?(self) and (c != self)
+        classes << c
+      end
+    end
+    classes
+  end
+end
 
 module Stories
 
@@ -50,9 +70,7 @@ module Stories
 
     def finished(elapsed_time)
       puts
-
       print_story
-
       super
       puts "%d stories, %d scenarios" % [Stories.all.values.size,
               Stories.all.values.inject(0) {|total,s| total +
@@ -66,9 +84,10 @@ def show
   @test_file  = ARGV[0]
   require @test_file
   @test_cases = test_class.subclasses
+  puts @test_cases.inspect
 
   @test_cases.each{|tc|
-    tests = tc.constantize.suite.tests
+    tests = tc.suite.tests
     puts "\n+ #{colorize(tc, :bold)}"
     tests.each{|t|
       puts "|__ #{tc}##{t.method_name}"
