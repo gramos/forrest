@@ -7,13 +7,18 @@ class ForrestStoriesTest < ActionController::IntegrationTest
   story "As a stories user I want to see the stories report " +
          "in a very nice format" do
 
-    def setup
-
+    scenario "A user run forrest with a filepath as a param" do
     end
 
-    scenario "A master account tries to forbid an account" do
-
+    scenario "A user run forrest with a StoryName as a param" do
     end
 
-   end
+  end
+
+  story "As a stories user I want to see the benchmark for each scenario" do
+
+    scenario "A user run forrest with a StoryName as a param" do
+    end
+
+  end
 end

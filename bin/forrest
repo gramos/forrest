@@ -6,27 +6,11 @@ ENV["RAILS_ENV"] = "test"
 
 require 'rubygems'
 require 'active_support/core_ext/string/inflections'
-
+require 'active_support/core_ext/string'
 require 'test/unit/ui/console/testrunner'
+require File.join(File.dirname(__FILE__), '../lib/object')
 require File.join(File.dirname(__FILE__), '../lib/forrest/unix_console_styler')
 
-class Object
-  def self.subclasses(direct = false)
-    classes = []
-    if direct
-      ObjectSpace.each_object(Class) do |c|
-        next unless c.superclass == self
-        classes << c
-      end
-    else
-      ObjectSpace.each_object(Class) do |c|
-        next unless c.ancestors.include?(self) and (c != self)
-        classes << c
-      end
-    end
-    classes
-  end
-end
 
 module Stories
 
