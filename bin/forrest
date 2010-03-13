@@ -64,20 +64,22 @@ module Stories
 
 end
 
-def show
-  @test_file  = ARGV[0]
-  require @test_file
-  @test_cases = test_class.subclasses
-  puts @test_cases.inspect
-
-  @test_cases.each{|tc|
+def print_test_cases(test_cases)
+  test_cases.each{|tc|
     tests = tc.suite.tests
     puts "\n+ #{colorize(tc, :bold)}"
     tests.each{|t|
       puts "|__ #{tc}##{t.method_name}"
     }
-
   }
+end
+
+def show
+  @test_file  = ARGV[0]
+  require @test_file
+
+  @test_cases = test_class.subclasses
+  print_test_cases(@test_cases)
 
   begin
     Test::Unit::UI::Console::TestRunner.run(nil)
@@ -108,7 +110,7 @@ def test_class
 end
 
 def test_file
-  @test_file  = "test/stories/#{@test_class.split("::")[0].underscore}"
+  @test_file  = "test/#{@test_class.split("::")[0].underscore}"
 end
 
 def colorize(text, color)
