@@ -1,0 +1,125 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+require 'ftools'
+ENV["RAILS_ENV"] = "test"
+require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
+
+require 'test/unit/ui/console/testrunner'
+require 'unix_console_styler'
+
+module Stories
+
+  class ForrestRunner < Test::Unit::UI::Console::TestRunner
+    def test_finished(name)
+      set_story
+    end
+
+    def add_fault(fault)
+      @faults << fault
+    end
+
+    def set_story
+      s      ||= Story.new @suite.name
+      @story ||= Stories.all[s.name.constantize]
+    end
+
+    def print_scenario(scenario)
+      scenario.steps.each do |step|
+        puts "      #{step}"
+      end
+
+      scenario.assertions.each do |assertion|
+        puts "      #{assertion}"
+      end
+
+      puts
+    end
+
+    def print_story
+      puts "- #{@story.name} \n\n"
+
+      @story.scenarios.each do |scenario|
+        puts "    #{scenario.name}"
+
+        unless scenario.steps.empty? && scenario.assertions.empty?
+          print_scenario scenario
+        end
+      end
+    end
+
+    def finished(elapsed_time)
+      puts
+
+      print_story
+
+      super
+      puts "%d stories, %d scenarios" % [Stories.all.values.size,
+              Stories.all.values.inject(0) {|total,s| total +
+                                             s.scenarios.size }]
+    end
+  end
+
+end
+
+def show
+  @test_file  = ARGV[0]
+  require @test_file
+  @test_cases = test_class.subclasses
+
+  @test_cases.each{|tc|
+    tests = tc.constantize.suite.tests
+    puts "\n+ #{colorize(tc, :bold)}"
+    tests.each{|t|
+      puts "|__ #{tc}##{t.method_name}"
+    }
+
+  }
+
+  begin
+    Test::Unit::UI::Console::TestRunner.run(nil)
+  rescue NoMethodError
+  end
+end
+
+def run_story
+  @test_class = ARGV[0]
+  require test_file
+  Stories::ForrestRunner.run(@test_class.constantize)
+end
+
+def run_scenario
+  @test_class = ARGV[0].split("#")[0]
+  @test_name  = ARGV[0].split("#")[1]
+  puts test_file
+  require test_file
+  test = @test_class.constantize.suite.tests.find{|t|
+    t.method_name == @test_name
+  }
+
+  Test::Unit::UI::Console::TestRunner.run(test)
+end
+
+def test_class
+  @test_class = File.basename(@test_file, ".rb").camelize.constantize
+end
+
+def test_file
+  @test_file  = "test/stories/#{@test_class.split("::")[0].underscore}"
+end
+
+def colorize(text, color)
+  "#{UnixConsoleStyler::STYLE[color]}#{text}\e[0m"
+end
+
+if File.file? ARGV[0]
+  show
+else
+  if ARGV[0].include? "#"
+    run_scenario
+  else
+    run_story
+  end
+end
+
+
