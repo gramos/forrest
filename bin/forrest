@@ -56,9 +56,13 @@ module Stories
       puts
       print_story
       super
-      puts "%d stories, %d scenarios" % [Stories.all.values.size,
-              Stories.all.values.inject(0) {|total,s| total +
-                                             s.scenarios.size }]
+      stories_count   = Stories.all.values.size
+      scenarios_count = Stories.all.values.inject(0) {|total,s|
+                            total + s.scenarios.size }
+
+      puts colorize("#{stories_count} stories, ", :bold) +
+           colorize(" #{scenarios_count} scenarios", :bold)
+
     end
   end
 
