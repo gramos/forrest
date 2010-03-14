@@ -12,25 +12,26 @@ require File.join(File.dirname(__FILE__), '../lib/forrest/runner')
 def print_test_cases(test_cases)
   test_cases.each{|tc|
     tests = tc.suite.tests
-    puts "\n+ #{colorize(tc, :bold)}"
+    puts "\n+ #{colorize(tc, :bold)}/__#{@test_file}"
     tests.each{|t|
-      puts "|__ #{colorize(tc, :cyan)}##{colorize(t.method_name, :yellow)}"
+      puts "|__ #{colorize(tc, :cyan)}##{colorize(t.method_name, :yellow)}" +
+                 "/__#{@test_file}\n\n"
     }
   }
 end
 
 def require_rails_env?
-  env_path = File.expand_path(File.dirname(@test_file.to_s) +
-                         "/../../config/environment")
-  if File.file? env_path
-    puts "Loading #{env_path}"
-    require env_path
+  begin
+    require File.join(@test_dir, "../config/environment")
     return true
-  elsif File.file? "./config/environment"
-    require "./config/environment"
-    return true
+  rescue LoadError
+    begin
+      require File.join(@test_dir, "../../config/environment")
+      return true
+    rescue LoadError
+      return false
+    end
   end
-  return false
 end
 
 def require_active_support_or_rails_env
@@ -89,18 +90,20 @@ end
 
 if File.file? ARGV[0]
   puts "==> Printing all stories/scenarios...\n\n"
+  @test_dir  = File.dirname(ARGV[0])
   show
 else
+  @test_dir  = File.join(File.dirname(ARGV[0].split("/__")[1]))
+
   if ARGV[0].include? "#"
     puts "==> Runing scenario...\n\n"
     @test_class = ARGV[0].split("#")[0]
-    @test_name  = ARGV[0].split("#")[1]
-
+    @test_name  = ARGV[0].split("#")[1].split("/__")[0]
     require_active_support_or_rails_env
     run_scenario
   else
     puts "==> Runing story...\n\n"
-    @test_class = ARGV[0]
+    @test_class = ARGV[0].split("/__")[0]
 
     require_active_support_or_rails_env
     run_story
