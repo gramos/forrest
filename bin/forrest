@@ -7,15 +7,21 @@ require File.join(File.dirname(__FILE__), '../lib/object')
 require File.join(File.dirname(__FILE__), '../lib/forrest/unix_console_styler')
 require File.join(File.dirname(__FILE__), '../lib/forrest/runner')
 
+FILE_S = "%%--"
+
 # --------------------------------------------------------------------------
+
+def file_s
+  colorize(FILE_S, :bold)
+end
 
 def print_test_cases(test_cases)
   test_cases.each{|tc|
     tests = tc.suite.tests
-    puts "\n+ #{colorize(tc, :bold)}/__#{@test_file}"
+    puts "\n+ #{colorize(tc, :bold)}#{file_s}#{@test_file}"
     tests.each{|t|
       puts "|__ #{colorize(tc, :cyan)}##{colorize(t.method_name, :yellow)}" +
-                 "/__#{@test_file}\n\n"
+                 "#{file_s}#{@test_file}\n\n"
     }
   }
 end
@@ -93,17 +99,17 @@ if File.file? ARGV[0]
   @test_dir  = File.dirname(ARGV[0])
   show
 else
-  @test_dir  = File.join(File.dirname(ARGV[0].split("/__")[1]))
+  @test_dir  = File.join(File.dirname(ARGV[0].split("#{FILE_S}")[1]))
 
   if ARGV[0].include? "#"
     puts "==> Runing scenario...\n\n"
     @test_class = ARGV[0].split("#")[0]
-    @test_name  = ARGV[0].split("#")[1].split("/__")[0]
+    @test_name  = ARGV[0].split("#")[1].split("#{FILE_S}")[0]
     require_active_support_or_rails_env
     run_scenario
   else
     puts "==> Runing story...\n\n"
-    @test_class = ARGV[0].split("/__")[0]
+    @test_class = ARGV[0].split("#{FILE_S}")[0]
 
     require_active_support_or_rails_env
     run_story
