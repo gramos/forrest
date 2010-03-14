@@ -2,9 +2,10 @@
 
 require 'ftools'
 require 'rubygems'
-require 'active_support/core_ext/string/inflections'
-require 'active_support/core_ext/string'
+# require 'active_support/core_ext/array'
+# require 'active_support/core_ext/date'
 require 'test/unit/ui/console/testrunner'
+
 require File.join(File.dirname(__FILE__), '../lib/object')
 require File.join(File.dirname(__FILE__), '../lib/forrest/unix_console_styler')
 
@@ -73,13 +74,30 @@ def print_test_cases(test_cases)
   }
 end
 
+def can_load_rails_env?
+  File.file? rails_env_path
+end
+
+def rails_env_path
+  File.expand_path(File.dirname(@test_file.to_s) + "/../../config/environment")
+end
+
+def require_active_support_or_rails_env
+  if can_load_rails_env?
+    require rails_env_path
+  else
+    require 'active_support/core_ext/string/inflections'
+    require 'active_support/core_ext/string'
+  end
+end
+
+
 def show
   @test_file  = ARGV[0]
   require @test_file
-
+  require_active_support_or_rails_env
   @test_cases = test_class.subclasses
   print_test_cases(@test_cases)
-
   begin
     Test::Unit::UI::Console::TestRunner.run(nil)
   rescue NoMethodError
@@ -119,6 +137,7 @@ end
 if File.file? ARGV[0]
   show
 else
+  require_active_support_or_rails_env
   if ARGV[0].include? "#"
     puts "==> Runing scenario...\n\n"
     run_scenario
