@@ -1,9 +1,6 @@
 #!/usr/bin/env ruby
-
 require 'ftools'
 require 'rubygems'
-# require 'active_support/core_ext/array'
-# require 'active_support/core_ext/date'
 require 'test/unit/ui/console/testrunner'
 
 require File.join(File.dirname(__FILE__), '../lib/object')
@@ -74,23 +71,27 @@ def print_test_cases(test_cases)
   }
 end
 
-def can_load_rails_env?
-  File.file? rails_env_path
-end
+def require_rails_env?
+  env_path = File.expand_path(File.dirname(@test_file.to_s) +
+                         "/../../config/environment")
 
-def rails_env_path
-  File.expand_path(File.dirname(@test_file.to_s) + "/../../config/environment")
+  if File.file? env_path
+    puts "Loading #{env_path}"
+    require env_path
+    return true
+  elsif File.file? "./config/environment"
+    require "./config/environment"
+    return true
+  end
+  return false
 end
 
 def require_active_support_or_rails_env
-  if can_load_rails_env?
-    require rails_env_path
-  else
+  unless require_rails_env?
     require 'active_support/core_ext/string/inflections'
     require 'active_support/core_ext/string'
   end
 end
-
 
 def show
   @test_file  = ARGV[0]
@@ -105,16 +106,13 @@ def show
 end
 
 def run_story
-  @test_class = ARGV[0]
-  require test_file
+  require_test_file
   Stories::ForrestRunner.run(@test_class.constantize)
 end
 
 def run_scenario
-  @test_class = ARGV[0].split("#")[0]
-  @test_name  = ARGV[0].split("#")[1]
   puts test_file
-  require test_file
+  require_test_file
   test = @test_class.constantize.suite.tests.find{|t|
     t.method_name == @test_name
   }
@@ -122,12 +120,20 @@ def run_scenario
   Test::Unit::UI::Console::TestRunner.run(test)
 end
 
+def require_test_file
+  begin
+    require "test/#{test_file}"
+  rescue LoadError
+    require "test/stories/#{test_file}"
+  end
+end
+
 def test_class
   @test_class = File.basename(@test_file, ".rb").camelize.constantize
 end
 
 def test_file
-  @test_file  = "test/#{@test_class.split("::")[0].underscore}"
+  @test_file  = "#{@test_class.split("::")[0].underscore}"
 end
 
 def colorize(text, color)
@@ -138,12 +144,19 @@ if File.file? ARGV[0]
   puts "==> Printing all stories/scenarios...\n\n"
   show
 else
-  require_active_support_or_rails_env
+
   if ARGV[0].include? "#"
     puts "==> Runing scenario...\n\n"
+    @test_class = ARGV[0].split("#")[0]
+    @test_name  = ARGV[0].split("#")[1]
+
+    require_active_support_or_rails_env
     run_scenario
   else
     puts "==> Runing story...\n\n"
+    @test_class = ARGV[0]
+
+    require_active_support_or_rails_env
     run_story
   end
 end
