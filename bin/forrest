@@ -135,6 +135,7 @@ def colorize(text, color)
 end
 
 if File.file? ARGV[0]
+  puts "==> Printing all stories/scenarios...\n\n"
   show
 else
   require_active_support_or_rails_env
