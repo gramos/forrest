@@ -62,8 +62,9 @@ Run a specific scenario
 
 **Yes, you are thinking:** *this is a very large param, BUT, you can use this flow:*
 
-   1- Print all stories & scenarios in a file
-   2- use de forrest command and copy and paste the story or scenario (from the step 1) as the param
+   1. Print all stories & scenarios in a file
+
+   2. use de forrest command and copy and paste the story or scenario (from the step 1) as the param
 
 In this was is very easy to use.
 
