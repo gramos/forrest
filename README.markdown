@@ -60,7 +60,7 @@ Run a specific scenario
     1 tests, 0 assertions, 0 failures, 0 errors
 
 
-*Yes, you are thinking this is a very large param, BUT, you can use this flow:*
+**Yes, you are thinking:** *this is a very large param, BUT, you can use this flow:*
 
    1- Print all stories & scenarios in a file
    2- use de forrest command and copy and paste the story or scenario (from the step 1) as the param
