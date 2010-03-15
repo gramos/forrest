@@ -24,7 +24,7 @@ Print the stories/scenarios list
 
     Loaded suite
 
-Run a particular story
+Run a specific story
 ----------------------
 
    $ forrest ForrestStoriesTest::TestAsAStoriesUserIWantToSeeTheBenchmarkForEachScenario%%--test/forrest_stories_test.rb
@@ -44,7 +44,7 @@ Run a particular story
     2 tests, 0 assertions, 0 failures, 0 errors
     1 story,  2 scenarios
 
-Run a particular scenario
+Run a specific scenario
 -------------------------
 
     $ forrest ForrestStoriesTest::TestAsAStoriesUserIWantToSeeTheStoriesReportInAVeryNiceFormat#test_A_user_run_forrest_with_a_StoryName_as_a_param%%--test/forrest_stories_test.rb
@@ -60,7 +60,7 @@ Run a particular scenario
     1 tests, 0 assertions, 0 failures, 0 errors
 
 
-Yes, you are thinking this is a very large param, BUT, you can use this flow:
+*Yes, you are thinking this is a very large param, BUT, you can use this flow:*
 
    1- Print all stories & scenarios in a file
    2- use de forrest command and copy and paste the story or scenario (from the step 1) as the param
