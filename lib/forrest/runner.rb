@@ -49,6 +49,7 @@ module Stories
            colorize(" #{scenarios_count} scenarios", :bold)
 
     end
+
   end
 
 end

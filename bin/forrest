@@ -9,6 +9,10 @@ require File.join(File.dirname(__FILE__), '../lib/forrest/runner')
 
 # --------------------------------------------------------------------------
 
+def colorize(text, color)
+  "#{UnixConsoleStyler::STYLE[color]}#{text}\e[0m"
+end
+
 def print_test_cases(test_cases)
   test_cases.each{|tc|
     tests = tc.suite.tests
@@ -20,80 +24,61 @@ def print_test_cases(test_cases)
   }
 end
 
-def require_active_support
-  require 'active_support/core_ext'
+def test_class
+  if @running == 'scenario'
+    @test_class = ARGV[0].split("#")[0].constantize
+  else
+    @test_class = File.basename(@test_file, ".rb").camelize.constantize
+  end
 end
 
-def show
-  puts "==> Printing all stories/scenarios...\n\n"
-  @test_file = ARGV[0]
-  @test_dir  = File.dirname(@test_file)
+def test_file_from_arg
+  ARGV[0].split("#")[0].split("::")[0].underscore
+end
 
-  require @test_file
-  require_active_support
-  @test_cases = test_class.subclasses
-  print_test_cases(@test_cases)
+def test_name
+  @test_name  = ARGV[0].split("#")[1]
+end
+
+def test_cases
+  test_class.subclasses
+end
+
+def extract_scenario(arg)
+  scenario = test_class.suite.tests.find{|sc|
+    sc.method_name == test_name
+  }
+end
+
+def run_scenario(arg)
+  @running = 'scenario'
+  puts "==> Runing scenario...\n\n"
+  require "config/environment"
+  puts "requiring #{test_file_from_arg}"
+  require "test/stories/#{test_file_from_arg}"
+
+  Test::Unit::UI::Console::TestRunner.run(extract_scenario(arg))
+end
+
+def show(test_file)
+  puts "==> Printing all stories/scenarios...\n\n"
+  require test_file
+  print_test_cases(test_cases)
+
   begin
     Test::Unit::UI::Console::TestRunner.run(nil)
   rescue NoMethodError
   end
 end
 
-def run_story
-  puts "==> Runing story...\n\n"
-  @test_class = ARGV[0].split("::")[0]
-
-  require_active_support
-    require "config/environment"
-  require_test_file
-  Stories::ForrestRunner.run(@test_class.constantize)
-end
-
-def run_scenario
-  puts "==> Runing scenario...\n\n"
-  @test_class = ARGV[0].split("#")[0]
-  @test_name  = ARGV[0].split("#")[1]
-
-  # require_active_support
-  require "config/environment"
-
-  @test_dir   = File.dirname(test_file)
-
-  require_test_file
-  test = @test_class.constantize.suite.tests.find{|t|
-    t.method_name == @test_name
-  }
-
-  Test::Unit::UI::Console::TestRunner.run(test)
-end
-
-def require_test_file
-  begin
-    require "test/#{test_file}"
-  rescue LoadError
-    require "test/stories/#{test_file}"
-  end
-end
-
-def test_class
-  @test_class = File.basename(@test_file, ".rb").camelize.constantize
-end
-
-def test_file
-  @test_file  = "#{@test_class.split("::")[0].underscore}"
-end
-
-def colorize(text, color)
-  "#{UnixConsoleStyler::STYLE[color]}#{text}\e[0m"
-end
-
 # ------------------------------------------------------------------------------
 
-if File.file? ARGV[0]
-  show
+if File.file?(@test_file = ARGV[0])
+  @running = ''
+  show(@test_file)
 else
   if ARGV[0].include? "#"
-    run_scenario
+    run_scenario(ARGV[0])
   else
     run_story
   end
