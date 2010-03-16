@@ -6,6 +6,7 @@ require 'test/unit/ui/console/testrunner'
 require File.join(File.dirname(__FILE__), '../lib/object')
 require File.join(File.dirname(__FILE__), '../lib/forrest/unix_console_styler')
 require File.join(File.dirname(__FILE__), '../lib/forrest/runner')
+require File.join(File.dirname(__FILE__), '../lib/forrest/scenario_runner')
 
 # --------------------------------------------------------------------------
 
@@ -48,6 +49,7 @@ def extract_scenario(arg)
   scenario = test_class.suite.tests.find{|sc|
     sc.method_name == test_name
   }
+  scenario
 end
 
 def run_scenario(arg)
@@ -57,7 +59,9 @@ def run_scenario(arg)
   puts "requiring #{test_file_from_arg}"
   require "test/stories/#{test_file_from_arg}"
 
-  Test::Unit::UI::Console::TestRunner.run(extract_scenario(arg))
+  puts extract_scenario(arg).inspect
+  Stories::ForrestScenarioRunner.run(extract_scenario(arg))
+  # Test::Unit::UI::Console::TestRunner.run(extract_scenario(arg))
 end
 
 def show(test_file)
