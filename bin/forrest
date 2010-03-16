@@ -7,50 +7,30 @@ require File.join(File.dirname(__FILE__), '../lib/object')
 require File.join(File.dirname(__FILE__), '../lib/forrest/unix_console_styler')
 require File.join(File.dirname(__FILE__), '../lib/forrest/runner')
 
-FILE_S = "%%--"
-
 # --------------------------------------------------------------------------
-
-def file_s
-  colorize(FILE_S, :bold)
-end
 
 def print_test_cases(test_cases)
   test_cases.each{|tc|
     tests = tc.suite.tests
-    puts "\n+ #{colorize(tc, :bold)}#{file_s}#{@test_file}"
+    puts "\n+ #{colorize(tc, :bold)}"
     tests.each{|t|
-      puts "|__ #{colorize(tc, :cyan)}##{colorize(t.method_name, :yellow)}" +
-                 "#{file_s}#{@test_file}\n\n"
+      puts "|__ #{colorize(tc, :cyan)}##{colorize(t.method_name, :yellow)}"
+
     }
   }
 end
 
-def require_rails_env?
-  begin
-    require File.join(@test_dir, "../config/environment")
-    return true
-  rescue LoadError
-    begin
-      require File.join(@test_dir, "../../config/environment")
-      return true
-    rescue LoadError
-      return false
-    end
-  end
-end
-
-def require_active_support_or_rails_env
-  unless require_rails_env?
-    require 'active_support/core_ext/string/inflections'
-    require 'active_support/core_ext/string'
-  end
+def require_active_support
+  require 'active_support/core_ext'
 end
 
 def show
-  @test_file  = ARGV[0]
+  puts "==> Printing all stories/scenarios...\n\n"
+  @test_file = ARGV[0]
+  @test_dir  = File.dirname(@test_file)
+
   require @test_file
-  require_active_support_or_rails_env
+  require_active_support
   @test_cases = test_class.subclasses
   print_test_cases(@test_cases)
   begin
@@ -60,12 +40,25 @@ def show
 end
 
 def run_story
+  puts "==> Runing story...\n\n"
+  @test_class = ARGV[0].split("::")[0]
+
+  require_active_support
+    require "config/environment"
   require_test_file
   Stories::ForrestRunner.run(@test_class.constantize)
 end
 
 def run_scenario
-  puts test_file
+  puts "==> Runing scenario...\n\n"
+  @test_class = ARGV[0].split("#")[0]
+  @test_name  = ARGV[0].split("#")[1]
+
+  # require_active_support
+  require "config/environment"
+
+  @test_dir   = File.dirname(test_file)
+
   require_test_file
   test = @test_class.constantize.suite.tests.find{|t|
     t.method_name == @test_name
@@ -94,24 +87,14 @@ def colorize(text, color)
   "#{UnixConsoleStyler::STYLE[color]}#{text}\e[0m"
 end
 
+# ------------------------------------------------------------------------------
+
 if File.file? ARGV[0]
-  puts "==> Printing all stories/scenarios...\n\n"
-  @test_dir  = File.dirname(ARGV[0])
   show
 else
-  @test_dir  = File.join(File.dirname(ARGV[0].split("#{FILE_S}")[1]))
-
   if ARGV[0].include? "#"
-    puts "==> Runing scenario...\n\n"
-    @test_class = ARGV[0].split("#")[0]
-    @test_name  = ARGV[0].split("#")[1].split("#{FILE_S}")[0]
-    require_active_support_or_rails_env
     run_scenario
   else
-    puts "==> Runing story...\n\n"
-    @test_class = ARGV[0].split("#{FILE_S}")[0]
-
-    require_active_support_or_rails_env
     run_story
   end
 end
