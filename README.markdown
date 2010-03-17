@@ -14,20 +14,20 @@ Print the stories/scenarios list
 
 
     + ForrestStoriesTest::TestAsAStoriesUserIWantToSeeTheBenchmarkForEachScenario%%--test/forrest_stories_test.rb
-    |__ ForrestStoriesTest::TestAsAStoriesUserIWantToSeeTheBenchmarkForEachScenario#test_A_user_run_forrest_with_a_StoryName_as_a_param%%--test/forrest_stories_test.rb
+    |__ ForrestStoriesTest::TestAsAStoriesUserIWantToSeeTheBenchmarkForEachScenario#test_A_user_run_forrest_with_a_StoryName_as_a_param
 
 
     + ForrestStoriesTest::TestAsAStoriesUserIWantToSeeTheStoriesReportInAVeryNiceFormat%%--test/forrest_stories_test.rb
-    |__ ForrestStoriesTest::TestAsAStoriesUserIWantToSeeTheStoriesReportInAVeryNiceFormat#test_A_user_run_forrest_with_a_StoryName_as_a_param%%--test/forrest_stories_test.rb
+    |__ ForrestStoriesTest::TestAsAStoriesUserIWantToSeeTheStoriesReportInAVeryNiceFormat#test_A_user_run_forrest_with_a_StoryName_as_a_param
 
-    |__ ForrestStoriesTest::TestAsAStoriesUserIWantToSeeTheStoriesReportInAVeryNiceFormat#test_A_user_run_forrest_with_a_filepath_as_a_param%%--test/forrest_stories_test.rb
+    |__ ForrestStoriesTest::TestAsAStoriesUserIWantToSeeTheStoriesReportInAVeryNiceFormat#test_A_user_run_forrest_with_a_filepath_as_a_param
 
     Loaded suite
 
 Run a specific story
 ----------------------
 
-   $ forrest ForrestStoriesTest::TestAsAStoriesUserIWantToSeeTheBenchmarkForEachScenario%%--test/forrest_stories_test.rb
+   $ forrest ForrestStoriesTest::TestAsAStoriesUserIWantToSeeTheBenchmarkForEachScenario
 
    ==> Runing story...
 
@@ -47,7 +47,7 @@ Run a specific story
 Run a specific scenario
 -------------------------
 
-    $ forrest ForrestStoriesTest::TestAsAStoriesUserIWantToSeeTheStoriesReportInAVeryNiceFormat#test_A_user_run_forrest_with_a_StoryName_as_a_param%%--test/forrest_stories_test.rb
+    $ forrest ForrestStoriesTest::TestAsAStoriesUserIWantToSeeTheStoriesReportInAVeryNiceFormat#test_A_user_run_forrest_with_a_StoryName_as_a_param
 
     ==> Runing scenario...
 
