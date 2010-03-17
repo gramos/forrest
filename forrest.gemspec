@@ -2,7 +2,7 @@ require 'date'
 
 Gem::Specification.new do |s|
   s.name              = %q{forrest}
-  s.version           = "0.1.0"
+  s.version           = "0.1.1"
   s.date              = Date.today.to_s
   s.summary           = %q{Forrest is a runner for stories framework, you can run one story inside of a file that have many stories, can run one scenario or print the list of stories inside a file.}
   s.description       =<<DESCRIPTION
