@@ -13,7 +13,7 @@ Print the stories/scenarios list
     ==> Printing all stories/scenarios...
 
 
-    + ForrestStoriesTest::TestAsAStoriesUserIWantToSeeTheBenchmarkForEachScenario%%--test/forrest_stories_test.rb
+    + ForrestStoriesTest::TestAsAStoriesUserIWantToSeeTheBenchmarkForEachScenario
     |__ ForrestStoriesTest::TestAsAStoriesUserIWantToSeeTheBenchmarkForEachScenario#test_A_user_run_forrest_with_a_StoryName_as_a_param
 
 
@@ -27,22 +27,22 @@ Print the stories/scenarios list
 Run a specific story
 ----------------------
 
-   $ forrest ForrestStoriesTest::TestAsAStoriesUserIWantToSeeTheBenchmarkForEachScenario
+     $ forrest ForrestStoriesTest::TestAsAStoriesUserIWantToSeeTheBenchmarkForEachScenario
 
-   ==> Runing story...
+     ==> Runing story...
 
-   Loaded suite ForrestStoriesTest::TestAsAStoriesUserIWantToSeeTheStoriesReportInAVeryNiceFormat
-   Started
+     Loaded suite ForrestStoriesTest::TestAsAStoriesUserIWantToSeeTheStoriesReportInAVeryNiceFormat
+     Started
 
-   - As a stories user I want to see the stories report in a very nice format
+     - As a stories user I want to see the stories report in a very nice format
 
-       A user run forrest with a filepath as a param
-       A user run forrest with a StoryName as a param
+         A user run forrest with a filepath as a param
+         A user run forrest with a StoryName as a param
 
-    Finished in 0.001404 seconds.
+      Finished in 0.001404 seconds.
 
-    2 tests, 0 assertions, 0 failures, 0 errors
-    1 story,  2 scenarios
+      2 tests, 0 assertions, 0 failures, 0 errors
+      1 story,  2 scenarios
 
 Run a specific scenario
 -------------------------
