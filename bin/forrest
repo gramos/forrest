@@ -34,7 +34,11 @@ def test_class
 end
 
 def test_file_from_arg
-  ARGV[0].split("#")[0].split("::")[0].underscore
+  if @running == 'scenario'
+    ARGV[0].split("#")[0].split("::")[0].underscore
+  else
+    ARGV[0].split("::")[0].underscore
+  end
 end
 
 def test_name
@@ -56,12 +60,18 @@ def run_scenario(arg)
   @running = 'scenario'
   puts "==> Runing scenario...\n\n"
   require "config/environment"
-  puts "requiring #{test_file_from_arg}"
   require "test/stories/#{test_file_from_arg}"
 
-  puts extract_scenario(arg).inspect
   Stories::ForrestScenarioRunner.run(extract_scenario(arg))
-  # Test::Unit::UI::Console::TestRunner.run(extract_scenario(arg))
+end
+
+def run_story(story_name)
+  @running = 'story'
+  puts "==> Runing story...\n\n"
+  require "config/environment"
+  require "test/stories/#{test_file_from_arg}"
+
+  Stories::ForrestRunner.run(story_name.constantize)
 end
 
 def show(test_file)
@@ -84,7 +94,7 @@ else
   if ARGV[0].include? "#"
     run_scenario(ARGV[0])
   else
-    run_story
+    run_story(ARGV[0])
   end
 end
 

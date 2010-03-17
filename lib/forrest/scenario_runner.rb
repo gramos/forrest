@@ -4,8 +4,8 @@ module Test
       # Returns a verbose version of the error description.
 
       def long_display
-        backtrace = @exception.backtrace.join("\n    ")
-        "#{colorize('Error:', :red)}\n #{message}\n#{backtrace}"
+        backtrace = filter_backtrace(@exception.backtrace).join("\n    ")
+        "#{colorize('Error:', :red)}\n #{colorize(message, :red)}\n#{backtrace}"
       end
 
     end
