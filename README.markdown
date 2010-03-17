@@ -54,7 +54,11 @@ Run a specific scenario
     test/forrest_stories_test
     Loaded suite test_A_user_run_forrest_with_a_filepath_as_a_param(ForrestStoriesTest::TestAsAStoriesUserIWantToSeeTheStoriesReportInAVeryNiceFormat)
     Started
-    .
+
+    - As a stories user I want to see the stories report in a very nice format
+
+       A user run forrest with a StoryName as a param
+
     Finished in 0.000997 seconds.
 
     1 tests, 0 assertions, 0 failures, 0 errors
