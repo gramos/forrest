@@ -1,3 +1,5 @@
+require File.join(File.dirname(__FILE__), '../extensions/test/unit/error')
+
 module Stories
 
   class ForrestRunner < Test::Unit::UI::Console::TestRunner
