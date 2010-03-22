@@ -56,11 +56,36 @@ def extract_scenario(arg)
   scenario
 end
 
+def require_rails_env_and_test_file
+  begin
+    require "config/environment"
+  rescue LoadError
+    begin
+      require "../config/environment"
+    rescue LoadError
+      begin
+        require "../../config/environment"
+      rescue LoadError
+        require "../../../config/environment"
+      end
+    end
+  end
+
+  begin
+    require "#{RAILS_ROOT}/test/stories/#{test_file_from_arg}"
+  rescue LoadError
+    begin
+      require "#{RAILS_ROOT}/test/integration/#{test_file_from_arg}"
+    rescue LoadError
+      require "#{RAILS_ROOT}/stories/#{test_file_from_arg}"
+    end
+   end
+end
+
 def run_scenario(arg)
   @running = 'scenario'
   puts "==> Runing scenario...\n\n"
-  require "config/environment"
-  require "test/stories/#{test_file_from_arg}"
+  require_rails_env_and_test_file
 
   Stories::ForrestScenarioRunner.run(extract_scenario(arg))
 end
@@ -68,8 +93,7 @@ end
 def run_story(story_name)
   @running = 'story'
   puts "==> Runing story...\n\n"
-  require "config/environment"
-  require "test/stories/#{test_file_from_arg}"
+  require_rails_env_and_test_file
 
   Stories::ForrestRunner.run(story_name.constantize)
 end
