@@ -2,6 +2,8 @@ require File.join(File.dirname(__FILE__), '../extensions/test/unit/error')
 
 module Stories
 
+  class ScenarioNotFound < StandardError;  end
+
   class ForrestScenarioRunner < Test::Unit::UI::Console::TestRunner
 
     def test_finished(name)
@@ -22,6 +24,12 @@ module Stories
 
     def set_scenario
       @scenario = @story.scenarios.find{|sc| sc.name == @scenario_name}
+      if @scenario.nil?
+        @scenario = @story.scenarios.find{|sc| sc.name == @scenario_name.downcase}
+      end
+      if @scenario.nil?
+        raise  ScenarioNotFound, "\n#{@scenario_name} not found in #{@story.scenarios.inspect}"
+      end
     end
 
     def print_scenario

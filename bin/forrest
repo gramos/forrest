@@ -8,6 +8,7 @@ require File.join(File.dirname(__FILE__), '../lib/forrest/unix_console_styler')
 require File.join(File.dirname(__FILE__), '../lib/forrest/runner')
 require File.join(File.dirname(__FILE__), '../lib/forrest/scenario_runner')
 
+
 # --------------------------------------------------------------------------
 
 def colorize(text, color)
@@ -56,7 +57,7 @@ def extract_scenario(arg)
   scenario
 end
 
-def require_rails_env_and_test_file
+def require_rails_env_and_test_file(test_file = nil)
   begin
     require "config/environment"
   rescue LoadError
@@ -71,15 +72,19 @@ def require_rails_env_and_test_file
     end
   end
 
-  begin
-    require "#{RAILS_ROOT}/test/stories/#{test_file_from_arg}"
-  rescue LoadError
-    begin
-      require "#{RAILS_ROOT}/test/integration/#{test_file_from_arg}"
-    rescue LoadError
-      require "#{RAILS_ROOT}/stories/#{test_file_from_arg}"
-    end
+  if test_file.nil?
+   begin
+     require "#{RAILS_ROOT}/test/stories/#{test_file_from_arg}"
+   rescue LoadError
+     begin
+       require "#{RAILS_ROOT}/test/integration/#{test_file_from_arg}"
+     rescue LoadError
+       require "#{RAILS_ROOT}/stories/#{test_file_from_arg}"
+     end
    end
+  else
+    require test_file
+  end
 end
 
 def run_scenario(arg)
@@ -100,7 +105,7 @@ end
 
 def show(test_file)
   puts "==> Printing all stories/scenarios...\n\n"
-  require test_file
+  require_rails_env_and_test_file(test_file)
   print_test_cases(test_cases)
 
   begin

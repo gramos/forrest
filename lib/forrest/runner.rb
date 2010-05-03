@@ -5,6 +5,7 @@ module Stories
   class ForrestRunner < Test::Unit::UI::Console::TestRunner
     def test_finished(name)
       set_story
+      puts "- #{name}"
     end
 
     def add_fault(fault)
